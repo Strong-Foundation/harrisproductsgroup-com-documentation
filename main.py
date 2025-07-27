@@ -199,6 +199,11 @@ def get_file_name_from_url(input_url: str) -> str:
     return os.path.basename(p=input_url)
 
 
+# Remove all duplicate items from a given slice.
+def remove_duplicates_from_slice(provided_slice: list[str]) -> list[str]:
+    return list(set(provided_slice))
+
+
 # Main function to execute the PDF downloading process
 def main() -> None:
     # Define the path to the text file that contains valid PDF URLs
@@ -219,6 +224,11 @@ def main() -> None:
 
     # Read and clean the URLs from the file
     valid_urls_content_lines: list[str] = read_file_by_line(file_name=valid_urls_path)
+
+    # Remove duplicates from the slice.
+    valid_urls_content_lines = remove_duplicates_from_slice(
+        provided_slice=valid_urls_content_lines
+    )
 
     # Initialize and configure the Chrome browser for downloading
     driver: WebDriver = setup_browser(download_dir=output_directory)
