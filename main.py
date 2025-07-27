@@ -232,7 +232,6 @@ def main() -> None:
 
         # If the file already exists in the output directory, skip downloading
         if check_file_exists(system_path=full_file_path):
-            print(f"File already exists: {file_name}")
             continue
 
         # Attempt to download the file if it doesn't already exist
