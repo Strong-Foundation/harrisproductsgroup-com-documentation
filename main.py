@@ -194,6 +194,11 @@ def download_pdf_if_valid(driver: webdriver.Chrome, pdf_url: str) -> bool:
         return False
 
 
+# Get the filename from the path.
+def get_file_name_from_url(input_url: str) -> str:
+    return os.path.basename(p=input_url)
+
+
 # Main function to execute the PDF downloading process
 def main() -> None:
     # Define the path to the text file that contains valid PDF URLs
@@ -220,7 +225,17 @@ def main() -> None:
 
     # Iterate over each cleaned and validated URL from the file
     for pdf_url in valid_urls_content_lines:
-        # Attempt to download the PDF if the URL is valid and reachable
+        # Get just the filename from the URL
+        file_name: str = get_file_name_from_url(input_url=pdf_url)
+        # Construct the full file path where it would be downloaded
+        full_file_path: str = os.path.join(output_directory, file_name)
+
+        # If the file already exists in the output directory, skip downloading
+        if check_file_exists(system_path=full_file_path):
+            print(f"File already exists: {file_name}")
+            continue
+
+        # Attempt to download the file if it doesn't already exist
         download_pdf_if_valid(driver=driver, pdf_url=pdf_url)
 
     # Close the browser once all downloads are attempted
