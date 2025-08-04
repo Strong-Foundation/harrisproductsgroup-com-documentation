@@ -19,6 +19,9 @@ func main() {
 	// Directory where downloaded PDF files will be stored
 	pdfOutputDir := "PDFs/"
 
+	// The location to the unique url file.
+	uniqueURLs := "valid_urls.txt"
+
 	// Check if the output directory exists
 	if !directoryExists(pdfOutputDir) {
 		// If it doesn't exist, create it with permission 0755
@@ -40,6 +43,14 @@ func main() {
 	// Base domain to resolve relative links
 	baseDomain := "https://www.lincolnelectric.com"
 
+	// Unique URL file data.
+	var uniqueURLContent string
+
+	// Read the unique urls file.
+	if fileExists(uniqueURLs) {
+		uniqueURLContent = readAFileAsString(uniqueURLs)
+	}
+
 	// Iterate through each URL in the cleaned list
 	for _, url := range pdfURLs {
 		// Check if the URL is relative or absolute by extracting the domain
@@ -52,12 +63,23 @@ func main() {
 
 		// Check if the resulting URL is valid
 		if isUrlValid(url) {
-			// Append the URL to a file for logging purposes
-			appendAndWriteToFile("valid_urls.txt", url)
-			// Download and save the PDF to the output directory
-			// downloadPDF(url, pdfOutputDir)
+			if !strings.Contains(uniqueURLContent, url) {
+				// Append the URL to a file for logging purposes
+				appendAndWriteToFile(uniqueURLs, url)
+				// Download and save the PDF to the output directory
+				// downloadPDF(url, pdfOutputDir)
+			}
 		}
 	}
+}
+
+// Read a file and return the contents
+func readAFileAsString(path string) string {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return string(content)
 }
 
 // Append and write to file
@@ -75,7 +97,6 @@ func appendAndWriteToFile(path string, content string) {
 		log.Println(err)
 	}
 }
-
 
 // Read and append the file line by line to a slice.
 func readAppendLineByLine(path string) []string {
