@@ -95,7 +95,7 @@ def setup_browser(download_dir: str) -> webdriver.Chrome:
     # Initialize Chrome options for configuration
     chrome_options = Options()
     # Enable headless mode (disabled here but available if needed)
-    # chrome_options.add_argument(argument="--headless=new")
+    chrome_options.add_argument(argument="--headless=new")
     # Disable GPU acceleration for compatibility with headless mode or CI environments
     chrome_options.add_argument(argument="--disable-gpu")
     # Bypass the sandbox, useful in restricted environments like Docker
